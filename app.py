@@ -1,7 +1,7 @@
 from rembg import remove
 from PIL import Image, UnidentifiedImageError
 import streamlit as st
-from pyheif_pillow_opener import register_heif_opener
+import pyheif
 import io
 
 st.title("Image Background Remover")
@@ -10,11 +10,19 @@ uploaded_file = st.file_uploader("Choose a file", type=["png", "jpg", "jpeg", "h
 
 if uploaded_file is not None:
     try:
-        if uploaded_file.type == 'application/octet-stream' and uploaded_file.name.endswith('.heic'):
-            register_heif_opener()
-            image = Image.open(io.BytesIO(uploaded_file.read()))
+        if uploaded_file.name.endswith('.heic'):
+            heif_image = pyheif.read_heif(uploaded_file)
+            image = Image.frombytes(
+                heif_image.mode,
+                heif_image.size,
+                heif_image.data,
+                "raw",
+                heif_image.mode,
+                heif_image.stride,
+            )
         else:
             image = Image.open(uploaded_file)
+
         image = image.convert("RGBA")
         st.image(image, caption="Original Image", use_column_width=True)
 
