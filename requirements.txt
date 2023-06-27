@@ -1,4 +1,3 @@
 rembg
 pillow
 pyheif_pillow_opener
-io
