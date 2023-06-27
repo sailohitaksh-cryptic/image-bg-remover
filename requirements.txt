@@ -1,4 +1,4 @@
 rembg
 pillow
-pyheif_pillow_opener
+pyheif
 numpy==1.24
